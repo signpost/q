@@ -182,7 +182,8 @@ var nextTick =(function () {
     };
 
     if (typeof process === "object" &&
-        process.toString() === "[object process]" && process.nextTick) {
+        process.toString() === "[object process]" && process.nextTick &&
+        typeof setImmediate !== "function") {
         // Ensure Q is in a real Node environment, with a `process.nextTick`.
         // To see through fake Node environments:
         // * Mocha test runner - exposes a `process` global without a `nextTick`
@@ -203,6 +204,7 @@ var nextTick =(function () {
             requestTick = setImmediate.bind(window, flush);
         } else {
             requestTick = function () {
+                isNodeJS = true;
                 setImmediate(flush);
             };
         }
